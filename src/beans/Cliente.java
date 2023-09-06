@@ -9,21 +9,31 @@ public class Cliente {
     private String senha;
     private List<Solicitacao> solicitacoes;
     private int numeroPedidos;
+    private List<Veiculo> veiculos;
 
-   
-    public List<Solicitacao> getSolicitacoes(){
-    	return solicitacoes;
+    public List<Solicitacao> getSolicitacoes() {
+        return solicitacoes;
     }
-    
+
     public Cliente() {
         this.solicitacoes = new ArrayList<>();
         this.numeroPedidos = 0;
+        this.veiculos = new ArrayList<>();
     }
 
     public Cliente(String email, String senha) {
         this.email = email;
         this.senha = senha;
         this.solicitacoes = new ArrayList<>();
+        this.veiculos = new ArrayList<>();
+    }
+
+    public void cadastrarVeiculo(Veiculo veiculo) {
+        veiculos.add(veiculo);
+    }
+
+    public List<Veiculo> listarVeiculos() {
+        return veiculos;
     }
 
     public String getEmail() {
@@ -45,14 +55,11 @@ public class Cliente {
     public void incrementarNumeroPedidos() {
         this.numeroPedidos++;
     }
-    
+
     public int getNumeroPedidos() {
         return numeroPedidos;
     }
-    
 
-
-    
     public void exibirMenuPrincipal(Scanner scanner) {
         int opcao;
         do {
@@ -60,6 +67,7 @@ public class Cliente {
             System.out.println("1. Minhas solicitações");
             System.out.println("2. Solicitar guincho");
             System.out.println("3. Suporte ao cliente");
+            System.out.println("4. Cadastrar veículo");
             System.out.println("0. Sair");
             System.out.print("Escolha uma opção: ");
             opcao = scanner.nextInt();
@@ -75,6 +83,9 @@ public class Cliente {
                 case 3:
                     exibirSuporteAoCliente(scanner);
                     break;
+                case 4:
+                    cadastrarVeiculo(scanner);
+                    break;
                 case 0:
                     System.out.println("Saindo...");
                     break;
@@ -83,8 +94,6 @@ public class Cliente {
             }
         } while (opcao != 0);
     }
-
-
 
     private void exibirMinhasSolicitacoes() {
         System.out.println("===== Minhas Solicitações =====");
@@ -101,6 +110,31 @@ public class Cliente {
     }
 
     private void solicitarGuincho(Scanner scanner) {
+
+        if (veiculos.isEmpty()) {
+            System.out.println("Nenhum veículo cadastrado. Cadastre um veículo primeiro.");
+            return;
+        }
+
+
+        System.out.println("Veículos disponíveis:");
+        List<Veiculo> veiculosDisponiveis = listarVeiculos();
+        for (int i = 0; i < veiculosDisponiveis.size(); i++) {
+            System.out.println((i + 1) + ". " + veiculosDisponiveis.get(i).getMarca() + " " + veiculosDisponiveis.get(i).getModelo());
+        }
+
+     
+        System.out.print("Escolha um veículo (número): ");
+        int escolhaVeiculo = scanner.nextInt();
+        scanner.nextLine(); 
+
+        if (escolhaVeiculo < 1 || escolhaVeiculo > veiculosDisponiveis.size()) {
+            System.out.println("Escolha de veículo inválida.");
+            return;
+        }
+
+        Veiculo veiculoSelecionado = veiculosDisponiveis.get(escolhaVeiculo - 1);
+
         System.out.println("===== Solicitar Guincho =====");
         System.out.print("Foto Frontal [A, B, C, D, E, F ou G]: ");
         String fotoFrontal = scanner.nextLine();
@@ -134,11 +168,11 @@ public class Cliente {
                 System.out.println("Guincho solicitado com sucesso!");
 
                 System.out.println("Encontrando o melhor motorista para você...");
-                esperar(5000); 
+                esperar(5000);
 
                 String motoristaAleatorio = Motorista.obterMotoristaAleatorio();
                 System.out.println(motoristaAleatorio + " está a caminho.");
-                esperar(5000); 
+                esperar(5000);
 
                 int distancia = Motorista.gerarDistancia();
                 int tempoEspera = Motorista.gerarTempoEspera();
@@ -150,12 +184,12 @@ public class Cliente {
 
                 System.out.print("Avalie o serviço (1 a 5 estrelas): ");
                 int avaliacao = scanner.nextInt();
-                scanner.nextLine(); 
+                scanner.nextLine();
 
                 Solicitacao solicitacao = new Solicitacao(motoristaAleatorio, valor, distancia);
                 solicitacoes.add(solicitacao);
 
-                incrementarNumeroPedidos(); 
+                incrementarNumeroPedidos();
 
                 System.out.println("Obrigado por utilizar a AutoHelp!");
             }
@@ -163,7 +197,6 @@ public class Cliente {
             System.out.println("Não há guinchos disponíveis para o seu veículo.");
         }
     }
-
 
     private void exibirSuporteAoCliente(Scanner scanner) {
         System.out.println("===== Suporte ao Cliente =====");
@@ -174,13 +207,44 @@ public class Cliente {
         suporte.registrarReclamacao();
     }
 
+    private void cadastrarVeiculo(Scanner scanner) {
+        System.out.println("===== Cadastrar Veículo =====");
+
+      
+        System.out.print("Marca do veículo: ");
+        String marca = scanner.nextLine();
+
+        System.out.print("Modelo do veículo: ");
+        String modelo = scanner.nextLine();
+
+        System.out.print("Tipo do veículo: ");
+        String tipo = scanner.nextLine();
+
+        System.out.print("Carga do veículo: ");
+        String carga = scanner.nextLine();
+
+        System.out.print("Ano do veículo: ");
+        String ano = scanner.nextLine();
+
+      
+        Veiculo novoVeiculo = new Veiculo();
+        novoVeiculo.setMarca(marca);
+        novoVeiculo.setModelo(modelo);
+        novoVeiculo.setTipo(tipo);
+        novoVeiculo.setCarga(carga);
+        novoVeiculo.setAno(ano);
+
+       
+        veiculos.add(novoVeiculo);
+
+        System.out.println("Veículo cadastrado com sucesso!");
+    }
+
     private void esperar(int milissegundos) {
         try {
             Thread.sleep(milissegundos);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        
-        
     }
 }
