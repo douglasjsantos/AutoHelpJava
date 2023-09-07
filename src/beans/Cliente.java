@@ -10,42 +10,31 @@ public class Cliente {
     private List<Solicitacao> solicitacoes;
     private int numeroPedidos;
     private List<Veiculo> veiculos;
+    private VeiculoDAO veiculoDAO; 
 
-    public List<Solicitacao> getSolicitacoes() {
-        return solicitacoes;
-    }
-
-    public Cliente() {
-        this.solicitacoes = new ArrayList<>();
-        this.numeroPedidos = 0;
-        this.veiculos = new ArrayList<>();
-    }
-
-    public Cliente(String email, String senha) {
+    
+    public Cliente(String email, String senha, VeiculoDAO veiculoDAO) {
         this.email = email;
         this.senha = senha;
         this.solicitacoes = new ArrayList<>();
         this.veiculos = new ArrayList<>();
+        this.veiculoDAO = veiculoDAO; 
     }
 
-    public void cadastrarVeiculo(Veiculo veiculo) {
-        veiculos.add(veiculo);
-    }
-
-    public List<Veiculo> listarVeiculos() {
-        return veiculos;
+    public List<Solicitacao> getSolicitacoes() {
+        return solicitacoes;
     }
 
     public String getEmail() {
         return email;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
     public String getSenha() {
         return senha;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     public void setSenha(String senha) {
@@ -116,17 +105,15 @@ public class Cliente {
             return;
         }
 
-
         System.out.println("Veículos disponíveis:");
         List<Veiculo> veiculosDisponiveis = listarVeiculos();
         for (int i = 0; i < veiculosDisponiveis.size(); i++) {
             System.out.println((i + 1) + ". " + veiculosDisponiveis.get(i).getMarca() + " " + veiculosDisponiveis.get(i).getModelo());
         }
 
-     
         System.out.print("Escolha um veículo (número): ");
         int escolhaVeiculo = scanner.nextInt();
-        scanner.nextLine(); 
+        scanner.nextLine();
 
         if (escolhaVeiculo < 1 || escolhaVeiculo > veiculosDisponiveis.size()) {
             System.out.println("Escolha de veículo inválida.");
@@ -207,10 +194,10 @@ public class Cliente {
         suporte.registrarReclamacao();
     }
 
+    
     private void cadastrarVeiculo(Scanner scanner) {
         System.out.println("===== Cadastrar Veículo =====");
 
-      
         System.out.print("Marca do veículo: ");
         String marca = scanner.nextLine();
 
@@ -226,7 +213,6 @@ public class Cliente {
         System.out.print("Ano do veículo: ");
         String ano = scanner.nextLine();
 
-      
         Veiculo novoVeiculo = new Veiculo();
         novoVeiculo.setMarca(marca);
         novoVeiculo.setModelo(modelo);
@@ -235,6 +221,9 @@ public class Cliente {
         novoVeiculo.setAno(ano);
 
        
+        veiculoDAO.adiciona(novoVeiculo);
+
+     
         veiculos.add(novoVeiculo);
 
         System.out.println("Veículo cadastrado com sucesso!");
@@ -246,5 +235,10 @@ public class Cliente {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+    }
+
+   
+    public List<Veiculo> listarVeiculos() {
+        return veiculos;
     }
 }
