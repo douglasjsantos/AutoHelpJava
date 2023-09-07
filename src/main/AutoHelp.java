@@ -1,10 +1,15 @@
 package main;
 import java.util.Scanner;
 import beans.Cliente;
+import beans.ConnectionFactory;
 
 
 public class AutoHelp {
     public static void main(String[] args) {
+    	
+    	ConnectionFactory c1 = new ConnectionFactory();
+    	
+    	c1.criaConexao();
     	
         Scanner scanner = new Scanner(System.in);
 
